@@ -1,4 +1,3 @@
-
 public class WordMasker implements IWordMasker{
 	@Override
 	public String initMask(String randomWord) {

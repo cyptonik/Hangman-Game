@@ -1,22 +1,20 @@
 import java.util.Scanner;
 
-public interface GetUserChar {
-	char getUserChar();
-}
-
-public class GetUserRuChar implements GetUserChar{
+public class GetUserRuChar implements IGetUserChar{
 	private final Scanner sc;
 
-	public GetUserChar(Scanner scanner) {
+	public GetUserRuChar(Scanner scanner) {
 		this.sc = scanner;
 	}
 
 	@Override
 	public char getUserChar() {
-		Scanner sc = InputProvider.getScanner();
-
 		System.out.println("Введите букву");
-		char ch = sc.nextLine().charAt(0);
+		String input = sc.nextLine();
+		while (input.length() == 0) 
+			input = sc.nextLine();
+
+		char ch = input.charAt(0);
 		ch = Character.toUpperCase(ch);
 
 		while (!Character.isLetter(ch) || !Character.UnicodeBlock.of(ch).equals(Character.UnicodeBlock.CYRILLIC)) {

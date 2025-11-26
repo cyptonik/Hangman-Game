@@ -7,41 +7,43 @@ public class Game
 	private final WordsRu source;
     private final IWordMasker masker;
 	private final IChooseRandomWord randomizer;
-    private final GetUserChar inputReader;
-    private final HangmanDisplay display;
+    private final IGetUserChar inputReader;
+    private final IHangmanDisplay display;
 
 	private String gameWord;
 	private String maskWord;
+	private Set<Character> usedChars;
 
-    public Game(WordsRu source, IWordMasker masker, ChooseRandomWord randomizer, GetUserChar reader, HangmanDisplay display) {
-        this.wordSource = source;
+    public Game(WordsRu source, IWordMasker masker, IChooseRandomWord randomizer, 
+				IGetUserChar reader, IHangmanDisplay display) {
+        this.source = source;
         this.masker = masker;
         this.randomizer = randomizer;
         this.inputReader = reader;
         this.display = display;
-		this.gameWord = randomizer.chooseRandomWord(source.ruDict);
+
+		this.gameWord = randomizer.chooseRandomWord(source.dict);
 		this.maskWord = masker.initMask(gameWord);
+		this.usedChars = new HashSet<>();
     }
 
 	public void runGame() {
-		int countErrors = 0;
-		Set<Character> usedChars = new HashSet<>();
+		int attemptsLeft = mainGameCycle();
 
-		mainGameCycle(countErrors);
-
-		if ((numberOfAttempts - countErrors) == 0)
+		if (attemptsLeft == 0)
 			System.out.println("Вы проиграли - загаданное слово было : " + gameWord);
 		else
 			System.out.println("Поздравляю, Вы победили!!");
 	}
 
-	private void mainGameCycle(int countErrors) {
+	private int mainGameCycle() {
+		int countErrors = 0;
 		while (countErrors < numberOfAttempts && maskWord.indexOf('*') != -1) {
 			System.out.println(maskWord);
 			char inputChar = inputReader.getUserChar();
 
 			if (gameWord.indexOf(inputChar) != -1 && !usedChars.contains(inputChar)) {
-				//System.out.println("Вы угадали - эта буква есть в слове!");
+				System.out.println("Вы угадали - эта буква есть в слове!");
 				usedChars.add(inputChar);
 				maskWord = masker.updateMask(maskWord, gameWord, inputChar);
 			}
@@ -62,6 +64,8 @@ public class Game
 
 			System.out.println("Осталось попыток : " + (numberOfAttempts - countErrors) + '\n');
 		}
+
+		return numberOfAttempts - countErrors;
 	}
 
 }

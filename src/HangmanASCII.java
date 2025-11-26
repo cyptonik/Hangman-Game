@@ -1,8 +1,4 @@
-public interface HangmanDisplay {
-	void displayHangman(int error);
-}
-
-public class HangmanASCII implements HangmanDisplay{
+public class HangmanASCII implements IHangmanDisplay{
 	private static final String[] hangmanPhases = {
 		" +---+\n" +
 		" |   |\n" +
